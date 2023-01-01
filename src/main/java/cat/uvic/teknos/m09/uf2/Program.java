@@ -22,20 +22,23 @@ public class Program {
 
         var threadVerify = new Thread(() -> {
             try {
-                properties.load(new FileInputStream("build/resources/main/hash.properties"));
+                properties.load(Program.class.getResourceAsStream("/hash.properties"));
+                synchronized (Program.class) {
+                    properties.load(new FileInputStream("build/resources/main/hash.properties"));
 
-                while (follow) {
-                    verifyPropertis(properties, hashParameters);
-                    Thread.sleep(60*1000);
+                    while (follow) {
+                        verifyPropertis(properties, hashParameters);
+                    }
+                    Thread.sleep(60 * 1000);
+
                 }
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
-
-        properties.load(Program.class.getResourceAsStream("/hash.properties"));
 
         threadVerify.start();
 
